@@ -10,7 +10,7 @@
 </head>
 
 <body onload="initGame()">
-    <h1>Minesweeper</h1>
+    <h1>Mine Sweeper</h1>
 
     <div>
         <button onclick="level(4,2)">Beginner</button>
@@ -25,6 +25,11 @@
     <div>
         <table style="display: inline-block;" class="hints"></table>
         <table style="display: inline-block;" class="board"></table>
+        <div style="display: inline-block;">
+            <button onclick="safeClick()" class="safe">Safe Click</button>
+            <br>
+            <label class="availableSafe"></label>
+        </div>
     </div>
     <h2 class="statusGame"></h2>
 
@@ -38,6 +43,8 @@
     <script src="js/utilisMove.js"></script>
     <script src="js/utilisTable.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/click.js"></script>
+    <script src="js/hint.js"></script>
 </body>
 
 </html>

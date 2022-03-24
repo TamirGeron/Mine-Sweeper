@@ -25,7 +25,7 @@ function getNums(size) {
 
 //Make Sound
 function sound(str) {
-  var audio = new Audio(`sound/${str}.mp3`)
+  var audio = new Audio("sound/" + str + ".mp3")
   audio.play()
 }
 
@@ -161,5 +161,5 @@ function timer() {
 
 function setTime() {
   ++gTotalSeconds;
-  gSecondsLabel.innerText = gTotalSeconds
+  gSecondsLabel.innerText = `${gTotalSeconds} Seconds`
 }

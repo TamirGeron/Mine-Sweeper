@@ -24,6 +24,7 @@ var isGameOn;
 var gSelectedPoses;
 var gHints;
 var gIsHintClick;
+var gSafeClickCount;
 
 function initGame() {
     restGame();
@@ -40,75 +41,21 @@ function restGame() {
     gCountSelected = 0
     clearInterval(gIntervalTime)
     gFlagsCount = gBombNum;
-    gFlagsLabel.innerText = gFlagsCount;
+    gFlagsLabel.innerText = gFlagsCount + ' flags';
     gTotalSeconds = 0;
-    gSecondsLabel.innerText = gTotalSeconds;
+    gSecondsLabel.innerText = `${gTotalSeconds} Seconds`;
     gBombs = [];
     isFirst = true;
     gLifeCount = 3;
     gSmile.innerText = '😀'
     heartStatus();
+    showScore()
+    gSafeClickCount = 3
+    var elSafe = document.querySelector('.availableSafe')
+    elSafe.innerText = `${gSafeClickCount} clicks available`;
 }
 
-function hintClicked(elHint, data) {
-    if (data !== 1) return;
-    gIsHintClick = true;
-    elHint.innerText = '❌'
-    elHint.dataset.num = -1
-}
 
-function hintCellClicked(elCell) {
-    var classArr = elCell.className.split("-")
-    var pos = { i: +classArr[1], j: +classArr[2] }
-    var cellsToShow = getNeighborsPosition(pos, gBoard)
-    cellsToShow.push(pos)
-    for (var i = 0; i < cellsToShow.length; i++) {
-        var curPosNe = cellsToShow[i];
-        var elCurNe = document.querySelector(`.cell-${curPosNe.i}-${curPosNe.j}`);
-        var value = +elCurNe.dataset.num
-        if (value === -1) {
-            value = BOMB
-        }else{
-            elCurNe.classList.add('selected')
-            if (value === 0) value = EMPTY;
-        }
-        renderCell(curPosNe, value)
-    }
-    setTimeout(clearCellsHint, 1000, cellsToShow)
-}
-
-function clearCellsHint(cellsToHide) {
-    for (var i = 0; i < cellsToHide.length; i++) {
-        var curPosNe = cellsToHide[i];
-        renderCell(curPosNe, EMPTY);
-        var elCurNe = document.querySelector(`.cell-${curPosNe.i}-${curPosNe.j}`);
-
-        elCurNe.classList.remove('selected')
-        elCurNe.classList.remove('bomb')
-    }
-    gIsHintClick = false
-}
-
-function renderHints() {
-    var strHTML = '';
-    for (var i = 0; i < gHints.length; i++) {
-        var dataValue = gHints[i];
-        strHTML += '<tr>';
-        var className = `hintCell hint-${i}`
-        strHTML += `<td data-num="${dataValue}" onclick="hintClicked(this,${dataValue})" class="${className}">💡</td>`;
-        strHTML += '</tr>';
-    }
-    var elTable = document.querySelector('.hints');
-    elTable.innerHTML = strHTML;
-}
-
-function buildHints() {
-    var hints = [];
-    for (var i = 0; i < 3; i++) {
-        hints[i] = 1;
-    }
-    return hints;
-}
 
 function level(size, bombNum) {
     gSize = size;
@@ -123,91 +70,28 @@ function heartStatus() {
     }
 }
 
-function putFlag(elCell, event) {
-    if (!isGameOn) return
-    event.preventDefault();
-    var classArr = elCell.className.split("-")
-    var pos = { i: classArr[1], j: classArr[2] }
-    if (elCell.innerHTML === FLAG) {
-        renderCell(pos, EMPTY)
-        gFlagsCount++;
-    } else {
-        renderCell(pos, FLAG)
-        gFlagsCount--;
-    }
-    gFlagsLabel.innerText = gFlagsCount;
-}
-
-function cellClicked(elCell, dataName) {
-    if (gIsHintClick) {
-        hintCellClicked(elCell)
-        return;
-    }
-    if (!isGameOn) return;
-    var classArr = elCell.className.split("-")
-    var pos = { i: +classArr[1], j: +classArr[2] }
-
-    if (isFirst) {
-        timer();
-        if (dataName === -1) {
-            initGame()
-            elCell = document.querySelector(`.cell-${pos.i}-${pos.j}`)
-            cellClicked(elCell, +elCell.dataset.num)
-            return
-        }
-        isFirst = false
-    }
-    if (dataName === -1) {
-        bombClick()
-        renderCell(pos, BOMB)
-        if (gLifeCount === 0) lose();
-        else setTimeout(clearBomb, 500, pos, elCell)
-        return
-    } else if (dataName === 0) {
-        emptyClick(pos)
-        dataName = EMPTY;
-    } else {
-        renderCell(pos, dataName)
-        elCell.classList.add('selected')
-        gSelectedPoses.push(pos);
-        gCountSelected++
-    }
-    if (gCountSelected + gBombNum === gSize ** 2) win();
-}
-
 function win() {
     endGame('Victory')
     gSmile.innerText = '😎'
+    ScoreBoard();
 }
 
-function bombClick() {
-    gLifeCount--;
-    heartStatus();
-    sound('boom')
+function ScoreBoard() {
+    var level;
+    if (gSize === 4) level = 'beginner'
+    else if (gSize === 8) level = 'medium'
+    else level = 'expert'
+    var bestScore = +localStorage.getItem(`${level}`);
+    if (!bestScore) bestScore = gTotalSeconds;
+    if (gTotalSeconds < bestScore) bestScore = gTotalSeconds;
+    localStorage.setItem(`${level}`, bestScore)
+    showScore()
 }
 
-function emptyClick(pos) {
-    var neighbors = getNeighborsPosition(pos, gBoard)
-    for (var i = 0; i < neighbors.length; i++) {
-        var curPosNe = neighbors[i];
-        if (isPosInArr(curPosNe, gSelectedPoses)) continue;
-        var elCell = document.querySelector(`.cell-${curPosNe.i}-${curPosNe.j}`);
-        var value = +elCell.dataset.num
-        gSelectedPoses.push(curPosNe);
-        elCell.classList.add('selected')
-        if (value === 0) {
-            renderCell(curPosNe, EMPTY)
-            emptyClick(curPosNe)
-        } else renderCell(curPosNe, value)
-
-        gCountSelected++;
-    }
-}
-
-function clearBomb(pos, elCell) {
-    // elCell.style.backgroundColor = 'lightgrey'
-    elCell.classList.remove('bomb')
-    renderCell(pos, EMPTY)
+function showScore() {
+    document.getElementById('beginner').innerHTML = 'Beginner: ' + localStorage.getItem('beginner');
+    document.getElementById('medium').innerHTML = 'Medium: ' + localStorage.getItem('medium');
+    document.getElementById('expert').innerHTML = 'Expert: ' + localStorage.getItem('expert');
 }
 
 function endGame(msg) {
