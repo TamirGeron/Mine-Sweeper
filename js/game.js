@@ -25,6 +25,8 @@ var gSelectedPoses;
 var gHints;
 var gIsHintClick;
 var gSafeClickCount;
+var gIsManual = false;
+var gBombCount
 
 function initGame() {
     restGame();
@@ -32,6 +34,7 @@ function initGame() {
     renderBoard(gBoardClean, ".board");
     gHints = buildHints();
     renderHints();
+    gBombNum = gBombs.length
 }
 
 function restGame() {
@@ -44,7 +47,7 @@ function restGame() {
     gFlagsLabel.innerText = gFlagsCount + ' flags';
     gTotalSeconds = 0;
     gSecondsLabel.innerText = `${gTotalSeconds} Seconds`;
-    gBombs = [];
+    // gBombs = [];
     isFirst = true;
     gLifeCount = 3;
     gSmile.innerText = '😀'
@@ -128,7 +131,11 @@ function renderBoard(board, selector) {
 function buildBoard(pos) {
     var board = [];
     gBoardClean = [];
-    getBombs(gBombNum, gSize);
+    if (!gIsManual) {
+        gBombs = []
+        getBombs(gBombNum, gSize);
+    }
+    gIsManual = false;
     for (var i = 0; i < gSize; i++) {
         board.push([]);
         gBoardClean.push([]);

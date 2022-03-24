@@ -17,13 +17,18 @@ function putFlag(elCell, event) {
 }
 
 function cellClicked(elCell, dataName) {
+    var classArr = elCell.className.split("-")
+    var pos = { i: +classArr[1], j: +classArr[2] }
+
     if (gIsHintClick) {
         hintCellClicked(elCell)
         return;
     }
+    if (gIsManual) {
+        cellManual(elCell, pos)
+        return;
+    }
     if (!isGameOn) return;
-    var classArr = elCell.className.split("-")
-    var pos = { i: +classArr[1], j: +classArr[2] }
 
     if (isFirst) {
         timer();
@@ -39,7 +44,7 @@ function cellClicked(elCell, dataName) {
         bombClick()
         renderCell(pos, BOMB)
         if (gLifeCount === 0) lose();
-        else setTimeout(clearBomb, 500, pos, elCell)
+        // else setTimeout(clearBomb, 500, pos, elCell)
         return
     } else if (dataName === 0) {
         emptyClick(pos)
@@ -77,11 +82,11 @@ function emptyClick(pos) {
     }
 }
 
-function clearBomb(pos, elCell) {
-    // elCell.style.backgroundColor = 'lightgrey'
-    elCell.classList.remove('bomb')
-    renderCell(pos, EMPTY)
-}
+// function clearBomb(pos, elCell) {
+//     // elCell.style.backgroundColor = 'lightgrey'
+//     elCell.classList.remove('bomb')
+//     renderCell(pos, EMPTY)
+// }
 
 function safeClick() {
     if (gSafeClickCount === 0) return;
@@ -102,4 +107,37 @@ function safeClick() {
 
 function clearSafeCell(elCell) {
     elCell.classList.remove('safeCell')
+}
+
+function buildManual(elButton) {
+    gSmile.innerText='🧐'
+    gBombs = []
+    gIsManual = true;
+    gBombCount = gBombNum
+    elButton.innerText = `${gBombCount} Mines`;
+}
+
+function cellManual(elCell, pos) {
+    gBombs.push(pos);
+    renderCell(pos, BOMB);
+    elCell.classList.add('bomb')
+    gBombCount--;
+    if (gBombCount === 0) {
+        setTimeout(initGame, 1000)
+    }
+    var elButton = document.querySelector('.buildManual')
+    elButton.innerText = `${gBombCount} Mines`;
+}
+
+function boom7() {
+    gBombs=[];
+    var count = 0;
+    gIsManual = true;
+    for (var i = 0; i < gSize; i++) {
+        for (var j = 0; j < gSize; j++) {
+            count++;
+            if (count % 7 === 0) gBombs.push({ i: i, j: j });
+        }
+    }
+    initGame();
 }

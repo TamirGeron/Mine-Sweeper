@@ -37,7 +37,6 @@ function renderCell(location, value) {
   // Select the elCell and set the value
   var elCell = document.querySelector(`.cell-${location.i}-${location.j}`);
   elCell.innerText = value;
-  // if (value === EMPTYBOOM) elCell.classList.remove('bomb')
   if (value === BOMB) elCell.classList.add ('bomb')
 }
 
