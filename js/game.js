@@ -89,9 +89,9 @@ function ScoreBoard() {
 }
 
 function showScore() {
-    document.getElementById('beginner').innerHTML = 'Beginner: ' + localStorage.getItem('beginner');
-    document.getElementById('medium').innerHTML = 'Medium: ' + localStorage.getItem('medium');
-    document.getElementById('expert').innerHTML = 'Expert: ' + localStorage.getItem('expert');
+    document.getElementById('beginner').innerHTML = 'Beginner: ' + localStorage.getItem('beginner')+ ' seconds';
+    document.getElementById('medium').innerHTML = 'Medium: ' + localStorage.getItem('medium') + ' seconds';
+    document.getElementById('expert').innerHTML = 'Expert: ' + localStorage.getItem('expert') + ' seconds';
 }
 
 function endGame(msg) {
