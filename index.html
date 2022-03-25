@@ -10,40 +10,42 @@
 </head>
 
 <body onload="initGame()">
-    <h1>Mine Sweeper</h1>
+    <div class="gameBody">
+        <h1>Mine Sweeper</h1>
 
-    <div>
-        <button onclick="level(4,2)">Beginner</button>
-        <button onclick="level(8,12)">Medium</button>
-        <button onclick="level(12,30)">Expert</button>
-    </div>
-
-    <div style="display: inline-block;" class="flags"></div>
-    <div style="display: inline-block;" class="smile" onclick="initGame()"></div>
-    <div style="display: inline-block;" class="timer"></div>
-
-    <div>
-        <table style="display: inline-block;" class="hints"></table>
-        <table style="display: inline-block;" class="board"></table>
-        <div style="display: inline-block;">
-            <button onclick="safeClick()" class="safe">Safe Click</button>
-            <br>
-            <label class="availableSafe"></label>
+        <div>
+            <button onclick="level(4,2)">Beginner</button>
+            <button onclick="level(8,12)">Medium</button>
+            <button onclick="level(12,30)">Expert</button>
         </div>
-    </div>
 
-    <div>
-        <button onclick="initGame()">Normal Game</button>
-        <button class="buildManual" onclick="buildManual(this)">Manual Game</button>
-        <button onclick="boom7()">7 Boom</button>
-    </div>
+        <div style="display: inline-block;" class="flags"></div>
+        <div style="display: inline-block;" class="smile" onclick="initGame()"></div>
+        <div style="display: inline-block;" class="timer"></div>
 
-    <h2 class="statusGame"></h2>
+        <div>
+            <table style="display: inline-block;" class="hints"></table>
+            <table style="display: inline-block;" class="board"></table>
+            <div style="display: inline-block;">
+                <button onclick="safeClick()" class="safe">Safe Click</button>
+                <br>
+                <label class="availableSafe"></label>
+            </div>
+        </div>
 
-    <div>
-        <div id="beginner"></div>
-        <div id="medium"></div>
-        <div id="expert"></div>
+        <div>
+            <button onclick="initGame()">Normal Game</button>
+            <button class="buildManual" onclick="buildManual(this)">Manual Game</button>
+            <button onclick="boom7()">7 Boom</button>
+        </div>
+
+        <h2 class="statusGame"></h2>
+
+        <div class="scoreBoard">
+            <div id="beginner"></div>
+            <div id="medium"></div>
+            <div id="expert"></div>
+        </div>
     </div>
 
     <script src="js/game.js"></script>

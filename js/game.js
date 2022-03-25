@@ -47,7 +47,6 @@ function restGame() {
     gFlagsLabel.innerText = gFlagsCount + ' flags';
     gTotalSeconds = 0;
     gSecondsLabel.innerText = `${gTotalSeconds} Seconds`;
-    // gBombs = [];
     isFirst = true;
     gLifeCount = 3;
     gSmile.innerText = '😀'
@@ -57,8 +56,6 @@ function restGame() {
     var elSafe = document.querySelector('.availableSafe')
     elSafe.innerText = `${gSafeClickCount} clicks available`;
 }
-
-
 
 function level(size, bombNum) {
     gSize = size;

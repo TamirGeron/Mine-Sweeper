@@ -19,6 +19,7 @@ function putFlag(elCell, event) {
 function cellClicked(elCell, dataName) {
     var classArr = elCell.className.split("-")
     var pos = { i: +classArr[1], j: +classArr[2] }
+    console.log(dataName);
 
     if (gIsHintClick) {
         hintCellClicked(elCell)
@@ -66,6 +67,7 @@ function bombClick() {
 
 function emptyClick(pos) {
     var neighbors = getNeighborsPosition(pos, gBoard)
+    neighbors.push(pos);
     for (var i = 0; i < neighbors.length; i++) {
         var curPosNe = neighbors[i];
         if (isPosInArr(curPosNe, gSelectedPoses)) continue;
@@ -110,7 +112,7 @@ function clearSafeCell(elCell) {
 }
 
 function buildManual(elButton) {
-    gSmile.innerText='🧐'
+    gSmile.innerText = '🧐'
     gBombs = []
     gIsManual = true;
     gBombCount = gBombNum
@@ -130,7 +132,7 @@ function cellManual(elCell, pos) {
 }
 
 function boom7() {
-    gBombs=[];
+    gBombs = [];
     var count = 0;
     gIsManual = true;
     for (var i = 0; i < gSize; i++) {
