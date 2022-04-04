@@ -1,4 +1,5 @@
 "use strict";
+// @CR - If you dont use functions then delete
 
 
 // make a table 

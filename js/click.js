@@ -9,6 +9,7 @@ function putFlag(elCell, event) {
         renderCell(pos, EMPTY)
         gFlagsCount++;
     } else {
+        // @CR - It is better to write: !gFlagsCount
         if (gFlagsCount === 0) return
         renderCell(pos, FLAG)
         gFlagsCount--;
@@ -16,10 +17,9 @@ function putFlag(elCell, event) {
     gFlagsLabel.innerText = gFlagsCount + ' flags';
 }
 
-function cellClicked(elCell, dataName) {
+function cellClicked(elCell, data) {
     var classArr = elCell.className.split("-")
     var pos = { i: +classArr[1], j: +classArr[2] }
-    console.log(dataName);
 
     if (gIsHintClick) {
         hintCellClicked(elCell)
@@ -32,8 +32,8 @@ function cellClicked(elCell, dataName) {
     if (!isGameOn) return;
 
     if (isFirst) {
-        timer();
-        if (dataName === -1) {
+        startTimer();
+        if (data === -1) {
             initGame()
             elCell = document.querySelector(`.cell-${pos.i}-${pos.j}`)
             cellClicked(elCell, +elCell.dataset.num)
@@ -41,17 +41,16 @@ function cellClicked(elCell, dataName) {
         }
         isFirst = false
     }
-    if (dataName === -1) {
+    if (data === -1) {
         bombClick()
         renderCell(pos, BOMB)
-        if (gLifeCount === 0) lose();
-        // else setTimeout(clearBomb, 500, pos, elCell)
+        if (!gLifeCount) lose();
         return
-    } else if (dataName === 0) {
+    } else if (data === 0) {
         emptyClick(pos)
-        dataName = EMPTY;
+        data = EMPTY;
     } else {
-        renderCell(pos, dataName)
+        renderCell(pos, data)
         elCell.classList.add('selected')
         gSelectedPoses.push(pos);
         gCountSelected++
@@ -84,11 +83,6 @@ function emptyClick(pos) {
     }
 }
 
-// function clearBomb(pos, elCell) {
-//     // elCell.style.backgroundColor = 'lightgrey'
-//     elCell.classList.remove('bomb')
-//     renderCell(pos, EMPTY)
-// }
 
 function safeClick() {
     if (gSafeClickCount === 0) return;
@@ -111,7 +105,7 @@ function clearSafeCell(elCell) {
     elCell.classList.remove('safeCell')
 }
 
-function buildManual(elButton) {
+function initManual(elButton) {
     gSmile.innerText = '🧐'
     gBombs = []
     gIsManual = true;
@@ -124,9 +118,7 @@ function cellManual(elCell, pos) {
     renderCell(pos, BOMB);
     elCell.classList.add('bomb')
     gBombCount--;
-    if (gBombCount === 0) {
-        setTimeout(initGame, 1000)
-    }
+    if (!gBombCount) setTimeout(initGame, 1000)
     var elButton = document.querySelector('.buildManual')
     elButton.innerText = `${gBombCount} Mines`;
 }

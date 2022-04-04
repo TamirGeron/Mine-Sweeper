@@ -52,7 +52,7 @@ function renderHints() {
     elTable.innerHTML = strHTML;
 }
 
-function buildHints() {
+function createHints() {
     var hints = [];
     for (var i = 0; i < 3; i++) {
         hints[i] = 1;

@@ -155,7 +155,7 @@ function getNeighborsPosition(pos, mat) {
   return neighbors;
 }
 
-function timer() {
+function startTimer() {
   gIntervalTime = setInterval(setTime, 1000);
 }
 

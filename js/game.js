@@ -32,7 +32,7 @@ function initGame() {
     restGame();
     gBoard = buildBoard();
     renderBoard(gBoardClean, ".board");
-    gHints = buildHints();
+    gHints = createHints();
     renderHints();
     gBombNum = gBombs.length
 }
@@ -57,7 +57,7 @@ function restGame() {
     elSafe.innerText = `${gSafeClickCount} clicks available`;
 }
 
-function level(size, bombNum) {
+function setLevel(size, bombNum) {
     gSize = size;
     gBombNum = bombNum;
     initGame();
@@ -73,25 +73,28 @@ function heartStatus() {
 function win() {
     endGame('Victory')
     gSmile.innerText = '😎'
-    ScoreBoard();
+    scoreBoard();
 }
 
-function ScoreBoard() {
+function scoreBoard() {
     var level;
     if (gSize === 4) level = 'beginner'
     else if (gSize === 8) level = 'medium'
     else level = 'expert'
     var bestScore = +localStorage.getItem(`${level}`);
     if (!bestScore) bestScore = gTotalSeconds;
-    if (gTotalSeconds < bestScore) bestScore = gTotalSeconds;
+    bestScore = (gTotalSeconds < bestScore) ? gTotalSeconds : bestScore
     localStorage.setItem(`${level}`, bestScore)
     showScore()
 }
 
 function showScore() {
-    document.getElementById('beginner').innerHTML = 'Beginner: ' + localStorage.getItem('beginner')+ ' seconds';
-    document.getElementById('medium').innerHTML = 'Medium: ' + localStorage.getItem('medium') + ' seconds';
-    document.getElementById('expert').innerHTML = 'Expert: ' + localStorage.getItem('expert') + ' seconds';
+    var score=localStorage.getItem('beginner')
+    if(score) document.getElementById('beginner').innerHTML = 'Beginner: ' + score + ' seconds';
+    var score=localStorage.getItem('medium')
+    if(score) document.getElementById('medium').innerHTML = 'Medium: ' + score + ' seconds';
+    var score=localStorage.getItem('expert')
+    if(score) document.getElementById('expert').innerHTML = 'Expert: ' + score + ' seconds';
 }
 
 function endGame(msg) {
@@ -99,7 +102,6 @@ function endGame(msg) {
     clearInterval(gIntervalTime)
     isGameOn = false;
 }
-
 
 function lose() {
     for (var i = 0; i < gBombs.length; i++) {
@@ -114,10 +116,11 @@ function renderBoard(board, selector) {
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>';
         for (var j = 0; j < board[0].length; j++) {
-            var dataName = gBoard[i][j];
-            if (dataName === BOMB) dataName = -1
+            // @CR - dataName? - cell is better name 
+            var cell = gBoard[i][j];
+            if (cell === BOMB) cell = -1
             var className = `cell cell-${i}-${j}`
-            strHTML += `<td data-num="${dataName}"   oncontextmenu="putFlag(this,event)" onclick="cellClicked(this,${dataName})"  class="${className}"></td>`;
+            strHTML += `<td data-num="${cell}"   oncontextmenu="putFlag(this,event)" onclick="cellClicked(this,${cell})"  class="${className}"></td>`;
         }
         strHTML += '</tr>';
     }
@@ -161,7 +164,6 @@ function setMinesCount(board, size) {
 
 function getBombs(BombNum, size) {
     for (var i = 0; i < BombNum; i++) {
-        var isFirstTouchBomb = true;
         var posI = getRandomIntInclusive(0, size - 1)
         var posJ = getRandomIntInclusive(0, size - 1)
         gBombs.push({ i: posI, j: posJ })
